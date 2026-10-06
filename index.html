@@ -156,7 +156,21 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
 .pts span{display:block;font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px}
 .note{font-size:12px;color:var(--sub);line-height:1.7;margin:16px 4px 0}
 .intro .bigbtn{margin-top:22px}
-.foot{display:flex;justify-content:center;gap:18px}
+.foot{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px}
+.ttl{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px}
+.ttl:active{background:var(--soft)}
+.caret{font-size:11px;color:var(--water)}
+.yrow{display:flex;align-items:center;justify-content:space-between;margin:2px 0 14px}
+.yrow b{font-size:20px;font-weight:800}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mgrid button{position:relative;padding:14px 0;border-radius:16px;background:var(--soft);font-weight:800;font-size:15px}
+.mgrid button.cur{outline:2.5px solid var(--water);outline-offset:-2.5px}
+.mgrid button.sel{background:var(--water);color:#fff}
+.mgrid button.off{opacity:.35}
+.mgrid button i{position:absolute;left:50%;bottom:5px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--water)}
+.mgrid button.sel i{background:#fff}
+.pact{display:flex;gap:10px;margin-top:18px}
+.pact button{flex:1;border-radius:18px;padding:14px;font-weight:800;background:var(--soft);color:var(--water)}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -186,7 +200,7 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
   <header>
     <div class="hrow">
       <button class="nav" id="prev" aria-label="前へ">‹</button>
-      <h1 id="title">…</h1>
+      <button class="ttl" id="titleBtn" aria-haspopup="dialog"><h1 id="title">…</h1><span class="caret">▾</span></button>
       <button class="nav" id="next" aria-label="次へ">›</button>
     </div>
     <div class="tabs" id="tabs" role="tablist">
@@ -219,20 +233,28 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
   <section id="first" class="card empty" hidden>
     <p style="margin:0">まず、記録を始める日の残高を入れてください。<br>そこから先は、入るお金と出るお金を足していくだけです。</p>
     <button class="bigbtn" id="firstBtn">はじめの残高を入れる</button>
+    <button class="reset" id="firstImport" style="margin-top:6px">バックアップから読み込む</button>
   </section>
 
   <p class="status" id="status"></p>
-  <div class="foot"><button class="reset" id="helpBtn">使い方</button><button class="reset" id="resetBtn" hidden>データをリセット</button></div>
+  <div class="foot"><button class="reset" id="helpBtn">使い方</button><button class="reset" id="exportBtn" hidden>書き出す</button><button class="reset" id="importBtn">読み込む</button><button class="reset" id="resetBtn" hidden>リセット</button></div>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
 </div>
 
 <button class="fab" id="fab" hidden>＋ 記録する</button>
 
 <div class="scrim" id="scrim"></div>
+<div class="sheet" id="pSheet" role="dialog" aria-modal="true" aria-label="月を選ぶ">
+  <div class="grab"></div>
+  <div class="yrow"><button class="nav" id="pPrev" aria-label="前の年">‹</button><b id="pYear"></b><button class="nav" id="pNext" aria-label="次の年">›</button></div>
+  <div class="mgrid" id="pGrid"></div>
+  <div class="pact"><button id="pStart">記録のはじめ</button><button id="pNow">今月</button></div>
+</div>
 <div class="sheet confirm" id="cSheet" role="alertdialog" aria-modal="true" aria-labelledby="cTitle">
   <div class="grab"></div>
-  <h2 id="cTitle" style="font-size:17px;margin:4px 0 0;font-weight:800">データをリセットしますか？</h2>
-  <p>はじめの残高とすべての記録が消えます。<br>元には戻せません。</p>
-  <div class="acts"><button class="del" id="cNo" style="color:var(--sub)">やめる</button><button class="save" id="cYes" style="background:var(--out)">リセットする</button></div>
+  <h2 id="cTitle" style="font-size:17px;margin:4px 0 0;font-weight:800"></h2>
+  <p id="cBody"></p>
+  <div class="acts"><button class="del" id="cNo" style="color:var(--sub)">やめる</button><button class="save" id="cYes"></button></div>
 </div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle">
   <div class="grab"></div>
@@ -312,7 +334,7 @@ function render(){
   const a=idx(view),b=a+span-1,e=fromIdx(b);
   $('title').textContent=span===1?`${view.y}年${view.m}月`:`${view.y}年${view.m}月〜${e.y===view.y?'':e.y+'年'}${e.m}月`;
   $('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.s===span));
-  $('resetBtn').hidden=S.startBalance==null;
+  $('resetBtn').hidden=$('exportBtn').hidden=S.startBalance==null;
   if(S.startBalance==null){$('main').hidden=true;$('fab').hidden=true;$('first').hidden=false;return;}
   $('first').hidden=true;$('main').hidden=false;$('fab').hidden=false;
   const st=pd(S.startDate);
@@ -538,10 +560,11 @@ function openSheet(md,occ){
   setTimeout(()=>fAmt.focus(),280);
 }
 function closeSheet(){$('scrim').classList.remove('on');$('sheet').classList.remove('on');document.activeElement&&document.activeElement.blur();}
-$('scrim').onclick=()=>{closeSheet();cClose();};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();cClose();}});
+$('scrim').onclick=()=>{closeSheet();cClose();pClose();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();cClose();pClose();}});
 $('fab').onclick=()=>{if(span!==1){span=1;render();}openSheet('new');};
 $('firstBtn').onclick=()=>openSheet('start');
+$('firstImport').onclick=()=>{$('importFile').value='';$('importFile').click();};
 const prevMonth=k=>{let{y,m}=pd(k);if(--m<1){m=12;y--;}return ymKey(y,m);};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
@@ -572,15 +595,61 @@ $('del').onclick=()=>{
   persist();closeSheet();render();
 };
 
+/* ---------- 月を選ぶ ---------- */
+let pY=view.y;
+function drawPicker(){
+  $('pYear').textContent=pY+'年';
+  const has=new Set(S.items.filter(i=>!i.repeat).map(i=>i.date.slice(0,7)));
+  const st=S.startDate?pd(S.startDate):null;let h='';
+  for(let m=1;m<=12;m++){
+    const k=ymKey(pY,m),i=pY*12+m;
+    const cls=[(pY===view.y&&m===view.m)?'sel':'',(i===todayIdx)?'cur':'',(st&&i<idx(st))?'off':''].join(' ');
+    h+=`<button class="${cls}" data-m="${m}">${m}月${has.has(k)?'<i></i>':''}</button>`;
+  }
+  $('pGrid').innerHTML=h;
+}
+const pOpen=()=>{pY=view.y;drawPicker();$('scrim').classList.add('on');$('pSheet').classList.add('on');};
+const pClose=()=>{$('pSheet').classList.remove('on');$('scrim').classList.remove('on');};
+const goTo=(y,m)=>{navigated=true;view={y,m};pClose();render();scrollTo(0,0);};
+$('titleBtn').onclick=pOpen;
+$('pPrev').onclick=()=>{pY--;drawPicker();};$('pNext').onclick=()=>{pY++;drawPicker();};
+$('pGrid').onclick=e=>{const b=e.target.closest('button');if(b)goTo(pY,+b.dataset.m);};
+$('pNow').onclick=()=>goTo(now.getFullYear(),now.getMonth()+1);
+$('pStart').onclick=()=>{if(S.startDate){const st=pd(S.startDate);goTo(st.y,st.m);}else pClose();};
+
+/* ---------- 確認ダイアログ ---------- */
+let cAct=null;
+const cOpen=(title,body,yes,danger,act)=>{$('cTitle').textContent=title;$('cBody').innerHTML=body;$('cYes').textContent=yes;
+  $('cYes').style.background=danger?'var(--out)':'var(--water)';cAct=act;$('scrim').classList.add('on');$('cSheet').classList.add('on');};
+const cClose=()=>{$('cSheet').classList.remove('on');$('scrim').classList.remove('on');cAct=null;};
+$('cNo').onclick=cClose;
+$('cYes').onclick=()=>{const f=cAct;cClose();f&&f();};
+function replaceAll(d){
+  S=d;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+  span=1;navigated=false;initialView();fitView();render();scrollTo(0,0);
+}
+
 /* ---------- リセット ---------- */
-const cOpen=()=>{$('scrim').classList.add('on');$('cSheet').classList.add('on');};
-const cClose=()=>{$('cSheet').classList.remove('on');$('scrim').classList.remove('on');};
-$('resetBtn').onclick=cOpen;$('cNo').onclick=cClose;
-$('cYes').onclick=()=>{
-  S={startBalance:null,startDate:null,items:[]};
-  try{localStorage.removeItem(KEY);}catch(e){}
-  if(ref){clearTimeout(saveTimer);ref.set({startBalance:null,startDate:null,items:[]}).catch(()=>{});}
-  cClose();span=1;view={y:now.getFullYear(),m:now.getMonth()+1};render();scrollTo(0,0);
+$('resetBtn').onclick=()=>cOpen('データをリセットしますか？','はじめの残高とすべての記録が消えます。<br>先に「書き出す」でバックアップしておくと安心です。','リセットする',true,
+  ()=>{try{localStorage.removeItem(KEY);}catch(e){}replaceAll({startBalance:null,startDate:null,items:[]});});
+
+/* ---------- 書き出す・読み込む ---------- */
+$('exportBtn').onclick=()=>{
+  const d=new Date(),name=`flow-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.json`;
+  const blob=new Blob([JSON.stringify({app:'flow',version:1,exportedAt:d.toISOString(),...S})],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+};
+$('importBtn').onclick=()=>{$('importFile').value='';$('importFile').click();};
+$('importFile').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  let d;try{d=JSON.parse(await f.text());}catch(err){d=null;}
+  const ok=d&&Array.isArray(d.items)&&typeof d.startBalance==='number'&&/^\d{4}-\d{2}-\d{2}$/.test(d.startDate||'')
+    &&d.items.every(i=>i&&/^\d{4}-\d{2}-\d{2}$/.test(i.date)&&typeof i.amount==='number');
+  if(!ok){cOpen('読み込めませんでした','flowで書き出したファイル（.json）を選んでください。','閉じる',false,null);return;}
+  const data={startBalance:d.startBalance,startDate:d.startDate,items:d.items.map((i,k)=>({id:i.id||('i'+k),date:i.date,label:String(i.label||''),amount:Math.round(i.amount),repeat:!!i.repeat,...(i.until?{until:i.until}:{}),...(i.ex?{ex:i.ex}:{})}))};
+  const st=pd(data.startDate);
+  cOpen('このデータを読み込みますか？',`${st.y}年${st.m}月${st.d}日から、記録${data.items.length}件。<br>${S.startBalance!=null?'いま入っているデータは置きかわります。':''}`,'読み込む',S.startBalance!=null,()=>replaceAll(data));
 };
 
 /* ---------- 保存 ---------- */
