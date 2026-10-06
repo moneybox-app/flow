@@ -144,18 +144,50 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
 .acts .save{flex:1;background:var(--water);color:#fff;border-radius:18px;padding:15px;font-weight:800;font-size:16px}
 .acts .del{color:var(--out);padding:15px 14px;font-weight:800}
 .err{color:var(--out);font-size:13px;min-height:18px;margin-top:6px}
-.intro{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 28px) 24px calc(env(safe-area-inset-bottom,0px) + 28px)}
-.intro-in{max-width:440px;margin:0 auto;display:flex;flex-direction:column;min-height:100%}
-.logo{font-size:56px;font-weight:800;color:var(--water);letter-spacing:-.02em;line-height:1;margin:8px 0 0}
-.lead{font-size:20px;font-weight:800;line-height:1.5;margin:14px 0 0}
-.wave{display:block;width:100%;height:auto;margin:22px 0 6px}
-.pts{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:10px}
-.pts li{background:var(--card);border-radius:20px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
-.pts .ic{flex:none;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.pts b{display:block;font-size:15px;font-weight:800}
-.pts span{display:block;font-size:13px;color:var(--sub);line-height:1.6;margin-top:2px}
-.note{font-size:12px;color:var(--sub);line-height:1.7;margin:16px 4px 0}
-.intro .bigbtn{margin-top:22px}
+.intro{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.ob-top{display:flex;justify-content:flex-end;padding:10px 16px 0;max-width:520px;width:100%;margin:0 auto}
+.ob-skip{color:var(--sub);font-size:14px;font-weight:700;padding:8px 6px}
+.slides{flex:1;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.slides::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;overflow-y:auto;padding:12px 28px 10px;display:flex;flex-direction:column;justify-content:center;max-width:none}
+.slide>*{max-width:440px;width:100%;margin-left:auto;margin-right:auto}
+.logo{font-size:60px;font-weight:800;color:var(--water);letter-spacing:-.02em;line-height:1;margin:0}
+.ob-h{font-size:22px;font-weight:800;line-height:1.45;margin:10px auto 0}
+.ob-p{font-size:14px;color:var(--sub);line-height:1.85;margin:10px auto 0}
+.ob-p.small{font-size:12px}
+.ob-p a{color:var(--water);font-weight:700}
+.ob-step{width:30px!important;height:30px;margin:22px 0 0!important;border-radius:50%;background:var(--water);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+.wave{display:block;width:100%;height:auto;margin:22px auto 4px}
+.mock{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 10px 30px rgba(139,120,242,.14)}
+.mock.center{text-align:center;padding:28px 18px}
+.mk-label{font-size:12px;color:var(--sub);font-weight:700}
+.mk-amt{font-size:36px;font-weight:800;border-bottom:2.5px solid var(--line);padding:2px 0 6px}
+.mk-field{display:flex;justify-content:space-between;align-items:center;background:var(--soft);border-radius:14px;padding:11px 14px;margin-top:12px;font-size:14px}
+.mk-field span{color:var(--sub);font-weight:500}.mk-field b{font-weight:800}
+.mk-btn{margin-top:12px;background:var(--water);color:#fff;text-align:center;border-radius:14px;padding:11px;font-weight:800;font-size:14px}
+.mk-row{display:grid;grid-template-columns:30px 1fr 1fr 1fr;gap:6px;align-items:center;padding:8px 0;border-top:1.5px dashed var(--line);font-size:12.5px}
+.mk-row.head{border-top:0;font-size:11px;font-weight:800;color:var(--sub);padding-top:0}
+.mk-row span:last-child{text-align:right;font-weight:700}
+.mk-row small{display:block;font-size:10px;color:var(--sub)}
+.mk-row b{font-weight:800}
+.mk-d{width:28px;height:28px;border-radius:10px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:800}
+.mk-toggle{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:14px;font-weight:700}
+.mk-toggle i{width:44px;height:26px;border-radius:13px;background:var(--water);position:relative}
+.mk-toggle i::after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+.mk-months{display:flex;gap:6px;margin-top:14px}
+.mk-months span{flex:1;text-align:center;background:var(--out-s);color:var(--out);border-radius:10px;padding:7px 0;font-size:12px;font-weight:800}
+.mk-months span:last-child{background:var(--soft);color:var(--sub)}
+.mk-tabs{display:flex;gap:3px;background:var(--soft);border-radius:999px;padding:3px}
+.mk-tabs span{flex:1;text-align:center;font-size:11px;font-weight:700;color:var(--sub);padding:6px 0;border-radius:999px}
+.mk-tabs span.on{background:var(--card);color:var(--water)}
+.mk-chart{display:block;width:100%;height:auto;margin-top:10px}
+.mk-lock{font-size:40px}
+.mk-lt{font-weight:800;margin:6px 0 0}
+.ob-bottom{padding:10px 24px 18px;max-width:480px;width:100%;margin:0 auto}
+.dots{display:flex;justify-content:center;gap:7px;margin-bottom:14px}
+.dots i{width:8px;height:8px;border-radius:4px;background:var(--line);transition:width .2s,background .2s}
+.dots i.on{width:22px;background:var(--water)}
+.intro .bigbtn{margin-top:0}
 .foot{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px}
 .ttl{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:999px}
 .ttl:active{background:var(--soft)}
@@ -183,25 +215,81 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
 </style>
 </head>
 <body>
-<div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="introLogo">
- <div class="intro-in">
-  <h1 class="logo" id="introLogo">flow</h1>
-  <p class="lead">いくら残る？が<br>すぐわかる。</p>
-  <svg class="wave" viewBox="0 0 320 120" aria-hidden="true">
-    <defs><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--water)" stop-opacity=".35"/><stop offset="1" stop-color="var(--water2)" stop-opacity=".05"/></linearGradient></defs>
-    <path d="M0,70 L50,70 C62,70 62,30 74,30 L150,30 C162,30 162,52 174,52 L220,52 C232,52 232,64 244,64 L320,64 L320,110 L0,110 Z" fill="url(#ig)"/>
-    <path d="M0,70 L50,70 C62,70 62,30 74,30 L150,30 C162,30 162,52 174,52 L220,52 C232,52 232,64 244,64 L320,64" fill="none" stroke="var(--water)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="68" cy="34" r="7" fill="var(--card)" stroke="var(--in)" stroke-width="3.5"/>
-    <circle cx="168" cy="48" r="7" fill="var(--card)" stroke="var(--out)" stroke-width="3.5"/>
-    <circle cx="238" cy="61" r="7" fill="var(--card)" stroke="var(--out)" stroke-width="3.5"/>
-  </svg>
-  <ul class="pts">
-    <li><span class="ic" style="background:var(--soft);color:var(--water)">〰</span><div><b>残高の動きがひと目でわかる</b><span>入るお金と出るお金を入れると、残高が線になります。グラフをなぞれば、その日の残高が見られます。</span></div></li>
-    <li><span class="ic" style="background:var(--in-s);color:var(--in)">↻</span><div><b>毎月の支払いは一度だけ</b><span>給料や家賃は「毎月くりかえす」にすれば、次の月から自動で入ります。</span></div></li>
-    <li><span class="ic" style="background:var(--out-s);color:var(--out)">◷</span><div><b>3年先まで見通せる</b><span>半年・1年・2年・3年の収支と、月末の残高の見込みを確認できます。</span></div></li>
-  </ul>
-  <p class="note">データはこの端末のブラウザの中だけに保存され、どこにも送られません。登録もログインもいりません。<br>ホーム画面に追加して使うのがおすすめです（Safariの共有ボタン →「ホーム画面に追加」）。<br>くわしくは<a href="policy.html" style="color:var(--water);font-weight:700">プライバシーポリシーと利用上の注意</a>をご覧ください。</p>
-  <button class="bigbtn" id="introGo">はじめる</button>
+<div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="flowの使い方">
+ <div class="ob-top"><button class="ob-skip" id="obSkip">スキップ</button></div>
+ <div class="slides" id="slides">
+  <section class="slide">
+    <h1 class="logo">flow</h1>
+    <p class="ob-h">いくら残る？が<br>すぐわかる。</p>
+    <svg class="wave" viewBox="0 0 320 120" aria-hidden="true">
+      <defs><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--water)" stop-opacity=".35"/><stop offset="1" stop-color="var(--water2)" stop-opacity=".05"/></linearGradient></defs>
+      <path d="M0,70 L50,70 C62,70 62,30 74,30 L150,30 C162,30 162,52 174,52 L220,52 C232,52 232,64 244,64 L320,64 L320,110 L0,110 Z" fill="url(#ig)"/>
+      <path d="M0,70 L50,70 C62,70 62,30 74,30 L150,30 C162,30 162,52 174,52 L220,52 C232,52 232,64 244,64 L320,64" fill="none" stroke="var(--water)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="68" cy="34" r="7" fill="var(--card)" stroke="var(--in)" stroke-width="3.5"/>
+      <circle cx="168" cy="48" r="7" fill="var(--card)" stroke="var(--out)" stroke-width="3.5"/>
+      <circle cx="238" cy="61" r="7" fill="var(--card)" stroke="var(--out)" stroke-width="3.5"/>
+    </svg>
+    <p class="ob-p">お金の出入りを入れるだけで、残高の動きと、この先いくら残るかが線でわかる家計簿です。</p>
+  </section>
+  <section class="slide">
+    <div class="mock">
+      <div class="mk-label">はじめの残高</div>
+      <div class="mk-amt">¥120,000</div>
+      <div class="mk-field"><span>日付</span><b>10月1日</b></div>
+      <div class="mk-btn">保存する</div>
+    </div>
+    <p class="ob-step">1</p>
+    <p class="ob-h">まず、今の残高を入れる</p>
+    <p class="ob-p">銀行口座など、ふだん使っているお金の今の残高を入れます。ここがスタート地点になります。</p>
+  </section>
+  <section class="slide">
+    <div class="mock">
+      <div class="mk-row head"><span></span><span class="c-in">IN</span><span class="c-out">OUT</span><span>残高</span></div>
+      <div class="mk-row"><span class="mk-d">25</span><span><small>給料</small><b class="c-in">¥250,000</b></span><span></span><span>¥370,000</span></div>
+      <div class="mk-row"><span class="mk-d">27</span><span></span><span><small>家賃</small><b class="c-out">¥80,000</b></span><span>¥290,000</span></div>
+      <div class="mk-row"><span class="mk-d">28</span><span></span><span><small>カード</small><b class="c-out">¥32,000</b></span><span>¥258,000</span></div>
+    </div>
+    <p class="ob-step">2</p>
+    <p class="ob-h">入るお金・出るお金を記録</p>
+    <p class="ob-p">「＋ 記録する」から、金額と日付と名前を入れるだけ。給料や家賃、カードの引き落としなど、口座の大きな動きだけでも大丈夫です。</p>
+  </section>
+  <section class="slide">
+    <div class="mock">
+      <div class="mk-field"><span>家賃</span><b class="c-out">¥80,000</b></div>
+      <div class="mk-toggle"><span>毎月くりかえす</span><i></i></div>
+      <div class="mk-months"><span>11月</span><span>12月</span><span>1月</span><span>2月</span><span>…</span></div>
+    </div>
+    <p class="ob-step">3</p>
+    <p class="ob-h">毎月のものは、一度だけ</p>
+    <p class="ob-p">給料や家賃は「毎月くりかえす」をオンにすると、次の月からも自動で入ります。金額が違う月だけ「この月だけ」直せます。</p>
+  </section>
+  <section class="slide">
+    <div class="mock">
+      <div class="mk-tabs"><span>1か月</span><span>半年</span><span class="on">1年</span><span>3年</span></div>
+      <svg viewBox="0 0 260 90" class="mk-chart" aria-hidden="true">
+        <path d="M10,62 C40,58 60,54 90,48 C120,42 140,40 170,30 C200,22 225,18 250,12" fill="none" stroke="var(--water)" stroke-width="4" stroke-linecap="round"/>
+        <g fill="var(--in)"><rect x="18" y="74" width="10" height="10" rx="5"/><rect x="58" y="72" width="10" height="12" rx="5"/><rect x="138" y="70" width="10" height="14" rx="5"/><rect x="178" y="73" width="10" height="11" rx="5"/><rect x="218" y="71" width="10" height="13" rx="5"/></g>
+        <g fill="var(--out)"><rect x="98" y="84" width="10" height="5" rx="2.5"/></g>
+      </svg>
+      <div class="mk-field"><span>1年の収支</span><b class="c-in">+¥486,000</b></div>
+    </div>
+    <p class="ob-step">4</p>
+    <p class="ob-h">半年先、1年先まで見える</p>
+    <p class="ob-p">上のタブで期間を切り替えると、月ごとの収支と月末の残高の見込みがわかります。グラフをなぞると、その日の残高も見られます。</p>
+  </section>
+  <section class="slide">
+    <div class="mock center">
+      <div class="mk-lock">🔒</div>
+      <p class="mk-lt">データは、この端末の中だけ</p>
+    </div>
+    <p class="ob-h">登録なしで、すぐ使える</p>
+    <p class="ob-p">入れたデータはどこにも送られず、開発者にも見えません。機種変更のときは「データの管理」からバックアップを保存して移せます。</p>
+    <p class="ob-p small">Safariの共有ボタン →「ホーム画面に追加」で、アプリのように使えます。<br><a href="policy.html">プライバシーポリシーと利用上の注意</a></p>
+  </section>
+ </div>
+ <div class="ob-bottom">
+  <div class="dots" id="dots"></div>
+  <button class="bigbtn" id="introGo">次へ</button>
  </div>
 </div>
 <div class="wrap">
@@ -725,10 +813,18 @@ swipeClose($('dSheet'),()=>{dClose();$('scrim').classList.remove('on');});
 swipeClose($('pSheet'),pClose);
 swipeClose($('cSheet'),cClose);
 
-/* ---------- はじめの画面 ---------- */
-const showIntro=()=>{$('intro').hidden=false;$('introGo').focus();};
-$('introGo').onclick=()=>{$('intro').hidden=true;try{localStorage.setItem('flow-intro','1');}catch(e){}if(S.startBalance==null)openSheet('start');};
-$('helpBtn').onclick=()=>{$('intro').scrollTop=0;showIntro();};
+/* ---------- はじめの画面（チュートリアル） ---------- */
+const slides=$('slides'),N=slides.children.length;
+$('dots').innerHTML=Array.from({length:N},()=>'<i></i>').join('');
+const page=()=>Math.round(slides.scrollLeft/Math.max(1,slides.clientWidth));
+function syncOb(){const k=page();[...$('dots').children].forEach((d,i)=>d.classList.toggle('on',i===k));
+  $('introGo').textContent=k>=N-1?'はじめる':'次へ';$('obSkip').style.visibility=k>=N-1?'hidden':'visible';}
+slides.addEventListener('scroll',()=>requestAnimationFrame(syncOb),{passive:true});
+const finishIntro=()=>{$('intro').hidden=true;try{localStorage.setItem('flow-intro','1');}catch(e){}if(S.startBalance==null)openSheet('start');};
+const showIntro=()=>{$('intro').hidden=false;slides.scrollLeft=0;syncOb();};
+$('introGo').onclick=()=>{const k=page();if(k>=N-1)finishIntro();else slides.scrollTo({left:(k+1)*slides.clientWidth,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});};
+$('obSkip').onclick=finishIntro;
+$('helpBtn').onclick=showIntro;
 let seen=false;try{seen=localStorage.getItem('flow-intro')==='1';}catch(e){}
 if(!seen)showIntro();
 </script>
