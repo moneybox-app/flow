@@ -171,6 +171,14 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
 .mgrid button.sel i{background:#fff}
 .pact{display:flex;gap:10px;margin-top:18px}
 .pact button{flex:1;border-radius:18px;padding:14px;font-weight:800;background:var(--soft);color:var(--water)}
+.dlist{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.ditem{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--soft);border-radius:18px;padding:14px 16px}
+.ditem:active{transform:scale(.99)}
+.ditem .ic{flex:none;width:36px;height:36px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--water)}
+.ditem b{display:block;font-size:15px;font-weight:800}
+.ditem span span{display:block;font-size:12px;color:var(--sub);line-height:1.6;margin-top:2px;font-weight:500}
+.ditem.danger b{color:var(--out)}.ditem.danger .ic{color:var(--out)}
+.dnote{font-size:12px;color:var(--sub);line-height:1.7;margin:14px 2px 0}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -233,17 +241,27 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
   <section id="first" class="card empty" hidden>
     <p style="margin:0">まず、記録を始める日の残高を入れてください。<br>そこから先は、入るお金と出るお金を足していくだけです。</p>
     <button class="bigbtn" id="firstBtn">はじめの残高を入れる</button>
-    <button class="reset" id="firstImport" style="margin-top:6px">バックアップから読み込む</button>
+    <button class="reset" id="firstImport" style="margin-top:6px">バックアップから戻す</button>
   </section>
 
   <p class="status" id="status"></p>
-  <div class="foot"><button class="reset" id="helpBtn">使い方</button><button class="reset" id="exportBtn" hidden>書き出す</button><button class="reset" id="importBtn">読み込む</button><button class="reset" id="resetBtn" hidden>リセット</button><a class="reset" href="policy.html" style="color:var(--sub)">プライバシーと注意</a></div>
+  <div class="foot"><button class="reset" id="helpBtn">使い方</button><button class="reset" id="dataBtn">データの管理</button><a class="reset" href="policy.html" style="color:var(--sub)">プライバシーと注意</a></div>
   <input type="file" id="importFile" accept=".json,application/json" hidden>
 </div>
 
 <button class="fab" id="fab" hidden>＋ 記録する</button>
 
 <div class="scrim" id="scrim"></div>
+<div class="sheet" id="dSheet" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+  <div class="grab"></div>
+  <h2 id="dTitle" style="font-size:17px;margin:4px 0 12px;font-weight:800">データの管理</h2>
+  <div class="dlist">
+    <button class="ditem" id="exportBtn"><span class="ic">↓</span><span><b>バックアップを保存</b><span>今のデータを1つのファイルにして保存します。機種変更や、もしものときのために。</span></span></button>
+    <button class="ditem" id="importBtn"><span class="ic">↑</span><span><b>バックアップから戻す</b><span>「flowバックアップ_日付」という名前のファイルを選ぶと、そのときのデータに戻ります。ファイルは、ふつう「ファイル」アプリの「ダウンロード」フォルダにあります。</span></span></button>
+    <button class="ditem danger" id="resetBtn"><span class="ic">×</span><span><b>すべて消す</b><span>はじめの残高と記録をすべて消して、最初からやり直します。</span></span></button>
+  </div>
+  <p class="dnote">データはこの端末のブラウザの中だけにあります。ときどきバックアップを保存して、「ファイル」アプリやiCloudに置いておくと安心です。</p>
+</div>
 <div class="sheet" id="pSheet" role="dialog" aria-modal="true" aria-label="月を選ぶ">
   <div class="grab"></div>
   <div class="yrow"><button class="nav" id="pPrev" aria-label="前の年">‹</button><b id="pYear"></b><button class="nav" id="pNext" aria-label="次の年">›</button></div>
@@ -334,7 +352,7 @@ function render(){
   const a=idx(view),b=a+span-1,e=fromIdx(b);
   $('title').textContent=span===1?`${view.y}年${view.m}月`:`${view.y}年${view.m}月〜${e.y===view.y?'':e.y+'年'}${e.m}月`;
   $('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.s===span));
-  $('resetBtn').hidden=$('exportBtn').hidden=S.startBalance==null;
+  $('resetBtn').hidden=$('exportBtn').hidden=S.startBalance==null;$('dataBtn').hidden=S.startBalance==null;
   if(S.startBalance==null){$('main').hidden=true;$('fab').hidden=true;$('first').hidden=false;return;}
   $('first').hidden=true;$('main').hidden=false;$('fab').hidden=false;
   const st=pd(S.startDate);
@@ -560,8 +578,8 @@ function openSheet(md,occ){
   setTimeout(()=>fAmt.focus(),280);
 }
 function closeSheet(){$('scrim').classList.remove('on');$('sheet').classList.remove('on');document.activeElement&&document.activeElement.blur();}
-$('scrim').onclick=()=>{closeSheet();cClose();pClose();};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();cClose();pClose();}});
+$('scrim').onclick=()=>{closeSheet();cClose();pClose();dClose();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();cClose();pClose();dClose();}});
 $('fab').onclick=()=>{if(span!==1){span=1;render();}openSheet('new');};
 $('firstBtn').onclick=()=>openSheet('start');
 $('firstImport').onclick=()=>{$('importFile').value='';$('importFile').click();};
@@ -617,9 +635,14 @@ $('pGrid').onclick=e=>{const b=e.target.closest('button');if(b)goTo(pY,+b.datase
 $('pNow').onclick=()=>goTo(now.getFullYear(),now.getMonth()+1);
 $('pStart').onclick=()=>{if(S.startDate){const st=pd(S.startDate);goTo(st.y,st.m);}else pClose();};
 
+/* ---------- データの管理 ---------- */
+const dOpen=()=>{$('scrim').classList.add('on');$('dSheet').classList.add('on');};
+const dClose=()=>{$('dSheet').classList.remove('on');};
+$('dataBtn').onclick=dOpen;
+
 /* ---------- 確認ダイアログ ---------- */
 let cAct=null;
-const cOpen=(title,body,yes,danger,act)=>{$('cTitle').textContent=title;$('cBody').innerHTML=body;$('cYes').textContent=yes;
+const cOpen=(title,body,yes,danger,act)=>{$('cNo').hidden=!act;$('cTitle').textContent=title;$('cBody').innerHTML=body;$('cYes').textContent=yes;
   $('cYes').style.background=danger?'var(--out)':'var(--water)';cAct=act;$('scrim').classList.add('on');$('cSheet').classList.add('on');};
 const cClose=()=>{$('cSheet').classList.remove('on');$('scrim').classList.remove('on');cAct=null;};
 $('cNo').onclick=cClose;
@@ -630,26 +653,27 @@ function replaceAll(d){
 }
 
 /* ---------- リセット ---------- */
-$('resetBtn').onclick=()=>cOpen('データをリセットしますか？','はじめの残高とすべての記録が消えます。<br>先に「書き出す」でバックアップしておくと安心です。','リセットする',true,
-  ()=>{try{localStorage.removeItem(KEY);}catch(e){}replaceAll({startBalance:null,startDate:null,items:[]});});
+$('resetBtn').onclick=()=>{dClose();cOpen('すべて消しますか？','はじめの残高とすべての記録が消えます。<br>先に「バックアップを保存」しておくと安心です。','すべて消す',true,
+  ()=>{try{localStorage.removeItem(KEY);}catch(e){}replaceAll({startBalance:null,startDate:null,items:[]});});};
 
 /* ---------- 書き出す・読み込む ---------- */
-$('exportBtn').onclick=()=>{
-  const d=new Date(),name=`flow-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.json`;
+$('exportBtn').onclick=()=>{dClose();$('scrim').classList.remove('on');
+  const d=new Date(),name=`flowバックアップ_${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}.json`;
   const blob=new Blob([JSON.stringify({app:'flow',version:1,exportedAt:d.toISOString(),...S})],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+  setTimeout(()=>cOpen('バックアップを保存しました',`ファイル名は<br><b>${name}</b><br>です。<br><br>iPhoneなら、ふつうは「ファイル」アプリの「ダウンロード」フォルダに入っています。戻すときは、このファイルを選んでください。`,'OK',false,null),600);
 };
-$('importBtn').onclick=()=>{$('importFile').value='';$('importFile').click();};
+$('importBtn').onclick=()=>{dClose();$('scrim').classList.remove('on');$('importFile').value='';$('importFile').click();};
 $('importFile').onchange=async e=>{
   const f=e.target.files[0];if(!f)return;
   let d;try{d=JSON.parse(await f.text());}catch(err){d=null;}
   const ok=d&&Array.isArray(d.items)&&typeof d.startBalance==='number'&&/^\d{4}-\d{2}-\d{2}$/.test(d.startDate||'')
     &&d.items.every(i=>i&&/^\d{4}-\d{2}-\d{2}$/.test(i.date)&&typeof i.amount==='number');
-  if(!ok){cOpen('読み込めませんでした','flowで書き出したファイル（.json）を選んでください。','閉じる',false,null);return;}
+  if(!ok){cOpen('このファイルは使えません','「flowバックアップ_日付.json」という名前のファイルを選んでください。flowの「バックアップを保存」で作れます。','閉じる',false,null);return;}
   const data={startBalance:d.startBalance,startDate:d.startDate,items:d.items.map((i,k)=>({id:i.id||('i'+k),date:i.date,label:String(i.label||''),amount:Math.round(i.amount),repeat:!!i.repeat,...(i.until?{until:i.until}:{}),...(i.ex?{ex:i.ex}:{})}))};
   const st=pd(data.startDate);
-  cOpen('このデータを読み込みますか？',`${st.y}年${st.m}月${st.d}日から、記録${data.items.length}件。<br>${S.startBalance!=null?'いま入っているデータは置きかわります。':''}`,'読み込む',S.startBalance!=null,()=>replaceAll(data));
+  cOpen('このバックアップに戻しますか？',`${st.y}年${st.m}月${st.d}日から、記録${data.items.length}件。<br>${S.startBalance!=null?'今のデータは、このバックアップの内容に置きかわります。':''}`,'戻す',S.startBalance!=null,()=>replaceAll(data));
 };
 
 /* ---------- 保存 ---------- */
