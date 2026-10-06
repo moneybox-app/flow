@@ -122,7 +122,7 @@ header h1{margin:0;font-size:16px;font-weight:800;text-align:center}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:10;max-width:520px;margin:0 auto;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.9,.25,1.05);max-height:92%;overflow:auto}
 .sheet.on{transform:none}
 @media (prefers-reduced-motion:reduce){.sheet,.scrim{transition:none}.day.flash{animation:none}}
-.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px;box-shadow:0 0 0 12px transparent}
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:999px;padding:4px}
 .seg button{padding:10px;border-radius:999px;font-weight:800;color:var(--sub)}
 .seg button.on.o{background:var(--out-s);color:var(--out)}
@@ -696,6 +696,34 @@ function fitView(){if(S.startDate){const st=pd(S.startDate);if(idx(view)<idx(st)
 try{adopt(JSON.parse(localStorage.getItem(KEY)));}catch(e){}
 initialView();fitView();render();
 $('status').textContent='データはこの端末の中だけに保存されています';
+
+/* ---------- 下にスワイプでしまう ---------- */
+function swipeClose(el,close){
+  let y0=null,dy=0,t0=0,drag=false;
+  el.addEventListener('touchstart',e=>{
+    if(el.scrollTop>0||e.target.closest('input,textarea'))return;
+    y0=e.touches[0].clientY;t0=Date.now();dy=0;drag=false;
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    if(y0==null)return;
+    dy=e.touches[0].clientY-y0;
+    if(!drag){if(dy>8){drag=true;el.style.transition='none';}else if(dy<-8){y0=null;return;}else return;}
+    e.preventDefault();
+    el.style.transform=`translateY(${Math.max(0,dy)}px)`;
+  },{passive:false});
+  const end=()=>{
+    if(y0==null)return;y0=null;
+    if(!drag)return;drag=false;
+    const v=dy/Math.max(1,Date.now()-t0);
+    el.style.transition='';el.style.transform='';
+    if(dy>90||(dy>30&&v>0.5))close();
+  };
+  el.addEventListener('touchend',end);el.addEventListener('touchcancel',end);
+}
+swipeClose($('sheet'),closeSheet);
+swipeClose($('dSheet'),()=>{dClose();$('scrim').classList.remove('on');});
+swipeClose($('pSheet'),pClose);
+swipeClose($('cSheet'),cClose);
 
 /* ---------- はじめの画面 ---------- */
 const showIntro=()=>{$('intro').hidden=false;$('introGo').focus();};
